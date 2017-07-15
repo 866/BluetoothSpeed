@@ -8,12 +8,14 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
 import java.util.UUID;
+
 
 public class SpeedActivity extends AppCompatActivity {
 
@@ -29,6 +31,9 @@ public class SpeedActivity extends AppCompatActivity {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         final Handler handler = new Handler();
 
+        /* This code together with the one in onDestroy()
+         * will make the screen be always on until this Activity gets destroyed. */
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -97,7 +102,7 @@ public class SpeedActivity extends AppCompatActivity {
                             mmInputStream.read(packetBytes);
 
                             final String data = new String(packetBytes, "US-ASCII");
-
+                            Log.w("readBluetooth", data);
                             //The variable data now contains our full command
                             handler.post(new Runnable()
                             {
